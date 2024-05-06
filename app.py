@@ -73,14 +73,17 @@ if uploaded_file is not None:
     df['Transaction Type'] = df['Transaction Type'].str.replace("Category.", "")
 
     # Save DataFrame to Excel without wrapping text
-    excel_data = df.to_excel(index=False)
+    excel_writer = pd.ExcelWriter('extracted_data_with_transaction_type_and_keywords.xlsx', engine='xlsxwriter')
+    df.to_excel(excel_writer, index=False)
+    excel_writer.save()
 
     # Provide download link to the processed data in Excel format
     st.download_button(
         label="Download Processed Data",
-        data=excel_data,
+        data=open('extracted_data_with_transaction_type_and_keywords.xlsx', 'rb'),
         file_name='extracted_data_with_transaction_type_and_keywords.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+
 
     st.success('Data extracted and saved to extracted_data_with_transaction_type_and_keywords.xlsx')
