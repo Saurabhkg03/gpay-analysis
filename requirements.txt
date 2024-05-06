@@ -5,3 +5,4 @@ tensorflow
 scikit-learn
 xlsxwriter
 transformers
+scipy=1.13.0
