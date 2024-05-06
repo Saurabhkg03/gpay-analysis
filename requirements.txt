@@ -7,5 +7,4 @@ xlsxwriter
 transformers
 scipy>=1.7.3
 torch 
-torchvision 
-torchaudio
+
