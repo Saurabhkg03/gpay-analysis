@@ -77,7 +77,11 @@ if uploaded_file is not None:
     df.to_excel(excel_file_path, index=False)
     
     # Provide download link to the processed data in Excel format
-    st.markdown(f"Download processed data from [here](/{excel_file_path})")
+    st.download_button(
+        label="Download processed data",
+        data=open(excel_file_path, 'rb'),
+        file_name=excel_file_path,
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
-
-    st.success('Data extracted and saved to extracted_data_with_transaction_type_and_keywords.xlsx')
+    st.success('Data extracted and download button added')
