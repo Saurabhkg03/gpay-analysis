@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import re
-from transformers import pipeline, AutoTokenizer, TFAutoModelForSequenceClassification  # Updated import
+from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 from bs4 import BeautifulSoup
 
 def extract_receiver(content):
@@ -56,7 +56,7 @@ if uploaded_file is not None:
 
     # Load the Hugging Face model for transaction type classification
     tokenizer = AutoTokenizer.from_pretrained("mgrella/autonlp-bank-transaction-classification-5521155")
-    model = TFAutoModelForSequenceClassification.from_pretrained("mgrella/autonlp-bank-transaction-classification-5521155")  # Updated line
+    model = AutoModelForSequenceClassification.from_pretrained("mgrella/autonlp-bank-transaction-classification-5521155")
     pipe = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
     # Predict transaction types
