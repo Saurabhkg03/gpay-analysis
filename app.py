@@ -50,53 +50,7 @@ def extract_data(html_content):
     return pd.DataFrame(data)
 
 # Streamlit app layout and functionalities
-
 st.title("Transaction Data Processor")
-
-uploaded_file = st.file_uploader("Upload HTML file", type=["html"])
-
-if uploaded_file is not None:
-    html_content = uploaded_file.read()
-    df = extract_data(html_content)
-
-    # Load the Hugging Face model for transaction type classification
-    tokenizer = AutoTokenizer.from_pretrained("mgrella/autonlp-bank-transaction-classification-5521155")
-    model = AutoModelForSequenceClassification.from_pretrained("mgrella/autonlp-bank-transaction-classification-5521155")
-    pipe = pipeline("text-classification", model=model, tokenizer=tokenizer)
-
-    # Predict transaction types
-    receiver_names = df['Receiver'].tolist()
-    predictions = pipe(receiver_names)
-
-    # Get the predicted label for each transaction and remove "Category." part
-    predicted_labels = [prediction['label'].replace("Category.", "") for prediction in predictions]
-
-    # Apply keyword-based classification
-    df['Transaction Type'] = [classify_with_keywords(receiver_names[i], predicted_labels[i]) for i in range(len(df))]
-
-    # Export data to Excel and remove "Category." part from Transaction Type column
-    df['Transaction Type'] = df['Transaction Type'].str.replace("Category.", "")
-
-    # Save DataFrame to Excel without wrapping text
-    excel_file_path = 'extracted_data_with_transaction_type_and_keywords.xlsx'
-    df.to_excel(excel_file_path, index=False)
-    
-    # Provide download link to the processed data in Excel format
-    st.download_button(
-        label="Download processed data",
-        data=open(excel_file_path, 'rb'),
-        file_name=excel_file_path,
-        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-
-    st.success('Data extracted and download button added')
-
-# Streamlit app layout and functionalities
-
-st.title("Transaction Data Processor")
-
-# Add a sidebar for analysis options
-analysis_option = st.sidebar.selectbox("Choose an analysis option", ["Overview", "Transaction Type Analysis", "Category-wise Spending Analysis", "Receiver-wise Analysis", "Timeline Analysis"])
 
 uploaded_file = st.file_uploader("Upload HTML file", type=["html"])
 
@@ -197,7 +151,7 @@ if uploaded_file is not None:
         monthly_spending = df.groupby(df['Date'].dt.to_period('M'))['Amount'].sum()
         st.line_chart(monthly_spending)
 
-
+    analysis_option = st.selectbox("Choose an analysis option", ["Overview", "Transaction Type Analysis", "Category-wise Spending Analysis", "Receiver-wise Analysis", "Timeline Analysis"])
 
     if analysis_option == "Overview":
         overview_section()
